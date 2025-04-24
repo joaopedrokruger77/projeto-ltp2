@@ -1,13 +1,14 @@
-package org.example.model;
+package org.example.model.pacoteviagem;
 
-public abstract class PacoteViagem {
-    protected String nome;
-    protected String destino;
-    protected int duracao;
-    protected double preco;
-    protected String tipo;
+public class PacoteViagem {
+    private String nome;
+    private String destino;
+    private int duracao;
+    private double preco;
+    private TipoPacote tipo;
+    private String detalhes;
 
-    public PacoteViagem(String nome, String destino, int duracao, double preco, String tipo) {
+    public PacoteViagem(String nome, String destino, int duracao, double preco, TipoPacote tipo, String detalhes) {
         if (preco <= 0 || destino == null || destino.isEmpty()) {
             throw new IllegalArgumentException("Preço e destino são obrigatórios.");
         }
@@ -16,9 +17,8 @@ public abstract class PacoteViagem {
         this.duracao = duracao;
         this.preco = preco;
         this.tipo = tipo;
+        this.detalhes = detalhes;
     }
-
-    public abstract String getDetalhes();
 
     // Getters e Setters
     public String getNome() {
@@ -37,8 +37,12 @@ public abstract class PacoteViagem {
         return preco;
     }
 
-    public String getTipo() {
+    public TipoPacote getTipo() {
         return tipo;
+    }
+
+    public String getDetalhes() {
+        return detalhes;
     }
 
     public void setNome(String nome) {
@@ -57,7 +61,11 @@ public abstract class PacoteViagem {
         this.preco = preco;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(TipoPacote tipo) {
         this.tipo = tipo;
+    }
+
+    public void setDetalhes(String detalhes) {
+        this.detalhes = detalhes;
     }
 }
