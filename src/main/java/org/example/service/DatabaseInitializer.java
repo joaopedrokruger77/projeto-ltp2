@@ -21,16 +21,54 @@ public class DatabaseInitializer {
                     CREATE TABLE IF NOT EXISTS clientes (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         nome VARCHAR(100) NOT NULL,
-                        tipo ENUM('nacional', 'estrangeiro') NOT NULL,
-                        cpf VARCHAR(14),
-                        passaporte VARCHAR(20),
+                        tipo ENUM('NACIONAL', 'ESTRANGEIRO') NOT NULL,
+                        documento VARCHAR(20) NOT NULL UNIQUE, 
                         telefone VARCHAR(20),
-                        email VARCHAR(100),
-                        CONSTRAINT chk_documento CHECK (
-                            (tipo = 'nacional' AND cpf IS NOT NULL AND passaporte IS NULL) OR
-                            (tipo = 'estrangeiro' AND passaporte IS NOT NULL AND cpf IS NULL)
-                        )
+                        email VARCHAR(100)
                     );
+                """);
+                dbStmt.executeUpdate("""
+                
+                        CREATE TABLE IF NOT EXISTS pacotes_viagem (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    nome VARCHAR(100) NOT NULL,
+                    destino VARCHAR(100) NOT NULL,
+                    duracao INT NOT NULL,
+                    preco DECIMAL(10,2) NOT NULL,
+                    tipo ENUM('AVENTURA', 'LUXO', 'CULTURAL') NOT NULL,
+                    detalhes TEXT
+                );    
+                """);
+                dbStmt.executeUpdate("""
+                
+                        CREATE TABLE IF NOT EXISTS servicos_adicionais (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    nome VARCHAR(100) NOT NULL,
+                    descricao TEXT,
+                    preco DECIMAL(10,2) NOT NULL
+                );
+                """);
+                dbStmt.executeUpdate("""
+                
+                        CREATE TABLE IF NOT EXISTS cliente_pacote (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    cliente_id INT NOT NULL,
+                    pacote_id INT NOT NULL,
+                    data_contratacao DATE NOT NULL,
+                    FOREIGN KEY (cliente_id) REFERENCES clientes(id),
+                    FOREIGN KEY (pacote_id) REFERENCES pacotes_viagem(id)
+                );
+                """);
+                dbStmt.executeUpdate("""
+                
+                        CREATE TABLE IF NOT EXISTS pedido_servico (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    cliente_pacote_id INT NOT NULL,
+                    servico_id INT NOT NULL,
+                    FOREIGN KEY (cliente_pacote_id) REFERENCES cliente_pacote(id),
+                    FOREIGN KEY (servico_id) REFERENCES servicos_adicionais(id)
+                );
+        
                 """);
 
                 // Você pode repetir para as outras tabelas...
