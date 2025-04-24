@@ -3,18 +3,14 @@ package org.example.model.cliente;
 public class Cliente {
     int id;
     String nome;
-    ClienteType tipoCliente;
     String telefone;
     String email;
     String documento;
 
-    public Cliente(int id, String nome, ClienteType tipoCliente, String telefone, String email, String documento) {
-        this.id = id;
+    public Cliente(String nome, String telefone, String email) {
         this.nome = nome;
-        this.tipoCliente = tipoCliente;
         this.telefone = telefone;
         this.email = email;
-        this.documento = documento;
     }
 
     public int getId() {
@@ -31,14 +27,6 @@ public class Cliente {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public ClienteType getTipoCliente() {
-        return tipoCliente;
-    }
-
-    public void setTipoCliente(ClienteType tipoCliente) {
-        this.tipoCliente = tipoCliente;
     }
 
     public String getTelefone() {
