@@ -16,7 +16,6 @@ public class ClienteRepository {
     }
 
     public void salvar(Cliente cliente) {
-        // Exemplo genérico, você deve tratar os campos específicos para nacionais e estrangeiros
         String sql = "INSERT INTO cliente (nome, telefone, email, cpf, passaporte) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -39,12 +38,10 @@ public class ClienteRepository {
     }
 
     public Cliente buscarPorId(Long id) {
-        // Implementação simplificada
         return null;
     }
 
     public List<Cliente> listarTodos() {
-        // Implementação simplificada
         return new ArrayList<>();
     }
 

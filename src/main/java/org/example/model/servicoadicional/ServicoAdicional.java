@@ -11,7 +11,6 @@ public class ServicoAdicional {
         this.descricao = descricao;
     }
 
-    // Getters e Setters
     public String getNome() {
         return nome;
     }

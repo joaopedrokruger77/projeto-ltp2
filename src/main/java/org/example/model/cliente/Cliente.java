@@ -1,11 +1,15 @@
 package org.example.model.cliente;
 
-public class Cliente {
-    int id;
-    String nome;
-    String telefone;
-    String email;
-    String documento;
+import org.example.model.pacoteviagem.PacoteViagem;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class Cliente {
+    private String nome;
+    private String telefone;
+    private String email;
+    private List<PacoteViagem> pacotesContratados = new ArrayList<>();
 
     public Cliente(String nome, String telefone, String email) {
         this.nome = nome;
@@ -13,43 +17,30 @@ public class Cliente {
         this.email = email;
     }
 
-    public int getId() {
-        return id;
+    public void contratarPacote(PacoteViagem pacote) {
+        pacotesContratados.add(pacote);
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public List<PacoteViagem> getPacotesContratados() {
+        return pacotesContratados;
     }
 
     public String getNome() {
         return nome;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public abstract String getIdentificacao();
+
+    @Override
+    public String toString() {
+        return nome + " - " + getIdentificacao() + " - " + telefone + " - " + email;
     }
 
-    public String getTelefone() {
-        return telefone;
-    }
+    public abstract String getEmail();
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
+    public abstract String getPassaporte();
 
-    public String getEmail() {
-        return email;
-    }
+    public abstract String getCpf();
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getDocumento() {
-        return documento;
-    }
-
-    public void setDocumento(String documento) {
-        this.documento = documento;
-    }
+    public abstract String getTelefone();
 }

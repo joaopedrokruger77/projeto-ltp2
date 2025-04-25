@@ -24,7 +24,7 @@ public class PacoteViagemRepository {
             stmt.setString(2, pacote.getDestino());
             stmt.setInt(3, pacote.getDuracao());
             stmt.setDouble(4, pacote.getPreco());
-            stmt.setString(5, pacote.getTipo());
+            stmt.setString(5, String.valueOf(pacote.getTipo()));
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
