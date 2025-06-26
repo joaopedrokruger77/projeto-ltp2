@@ -28,42 +28,52 @@ public class ClienteNacional extends Cliente {
     }
 
     public static boolean validarCPF(String cpf) {
-        if (cpf == null || cpf.length() != 11) return false;
-        
-        try {
-            Integer.parseInt(cpf);
-        } catch (NumberFormatException e) {
+        // Garante que a string não seja nula e tenha 11 caracteres.
+        // A limpeza de máscara (pontos e traços) já foi feita na tela de cadastro.
+        if (cpf == null || cpf.length() != 11) {
             return false;
         }
 
-        // Verificar se todos os dígitos são iguais
-        boolean todosIguais = true;
-        for (int i = 1; i < cpf.length(); i++) {
-            if (cpf.charAt(i) != cpf.charAt(0)) {
-                todosIguais = false;
-                break;
+        // BLOCO COM ERRO REMOVIDO DAQUI
+
+        // Verificar se todos os dígitos são iguais (ex: 111.111.111-11)
+        // A regex (\\d)\\1{10} faz essa verificação de forma eficiente.
+        if (cpf.matches("(\\d)\\1{10}")) {
+            return false;
+        }
+
+        // Se chegou até aqui, o resto do seu código de cálculo já estava correto.
+        try {
+            // Validar primeiro dígito verificador
+            int soma = 0;
+            for (int i = 0; i < 9; i++) {
+                soma += Character.getNumericValue(cpf.charAt(i)) * (10 - i);
             }
+            int primeiroDigito = 11 - (soma % 11);
+            if (primeiroDigito >= 10) {
+                primeiroDigito = 0;
+            }
+
+            if (Character.getNumericValue(cpf.charAt(9)) != primeiroDigito) {
+                return false;
+            }
+
+            // Validar segundo dígito verificador
+            soma = 0;
+            for (int i = 0; i < 10; i++) {
+                soma += Character.getNumericValue(cpf.charAt(i)) * (11 - i);
+            }
+            int segundoDigito = 11 - (soma % 11);
+            if (segundoDigito >= 10) {
+                segundoDigito = 0;
+            }
+
+            // Retorna true se os dois dígitos verificadores estiverem corretos.
+            return Character.getNumericValue(cpf.charAt(10)) == segundoDigito;
+
+        } catch (Exception e) {
+            // Se qualquer outro erro inesperado ocorrer durante o cálculo, considera inválido.
+            return false;
         }
-        if (todosIguais) return false;
-
-        // Validar primeiro dígito verificador
-        int soma = 0;
-        for (int i = 0; i < 9; i++) {
-            soma += Character.getNumericValue(cpf.charAt(i)) * (10 - i);
-        }
-        int primeiroDigito = 11 - (soma % 11);
-        if (primeiroDigito >= 10) primeiroDigito = 0;
-
-        if (Character.getNumericValue(cpf.charAt(9)) != primeiroDigito) return false;
-
-        // Validar segundo dígito verificador
-        soma = 0;
-        for (int i = 0; i < 10; i++) {
-            soma += Character.getNumericValue(cpf.charAt(i)) * (11 - i);
-        }
-        int segundoDigito = 11 - (soma % 11);
-        if (segundoDigito >= 10) segundoDigito = 0;
-
-        return Character.getNumericValue(cpf.charAt(10)) == segundoDigito;
     }
-} 
+}

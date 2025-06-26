@@ -193,8 +193,9 @@ public class TelaCadastroCliente extends JDialog {
         }
     }
 
+    // Cole este método completo no lugar do seu validarCampos() em TelaCadastroCliente.java
     private boolean validarCampos() {
-        // Validar campos obrigatórios com tela de erros
+        // Validar campos obrigatórios
         if (txtNome.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Nome é obrigatório!", "Validação", JOptionPane.WARNING_MESSAGE);
             txtNome.requestFocus();
@@ -207,7 +208,7 @@ public class TelaCadastroCliente extends JDialog {
             return false;
         }
 
-        // Validar formato do e-mail pra exigir @
+        // Validar formato do e-mail
         if (!ValidadorEmail.validar(txtEmail.getText())) {
             JOptionPane.showMessageDialog(this, "Formato de e-mail inválido!", "Validação", JOptionPane.WARNING_MESSAGE);
             txtEmail.requestFocus();
@@ -232,26 +233,29 @@ public class TelaCadastroCliente extends JDialog {
             sdf.setLenient(false);
             sdf.parse(txtDataNascimento.getText());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Formato de data inválido! Use dd/MM/yyyy", "Validação", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Formato de data inválido! Use dd/MM/yyyy.", "Validação", JOptionPane.WARNING_MESSAGE);
             txtDataNascimento.requestFocus();
             return false;
         }
 
         // Validar documentos específicos
         if (rbNacional.isSelected()) {
-            if (txtCpf.getText().trim().isEmpty()) {
+            String cpfLimpo = txtCpf.getText().replaceAll("[^0-9]", ""); // Limpa pontos, traços, etc.
+
+            if (cpfLimpo.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "CPF é obrigatório!", "Validação", JOptionPane.WARNING_MESSAGE);
                 txtCpf.requestFocus();
                 return false;
             }
 
-            // LINHA CORRIGIDA AQUI
-            if (!ClienteNacional.validarCPF(txtCpf.getText().replaceAll("[^0-11]", ""))) {
+            // **** A CHAMADA CORRETA É ESTA ****
+            // Valida o CPF JÁ LIMPO
+            if (!ClienteNacional.validarCPF(cpfLimpo)) {
                 JOptionPane.showMessageDialog(this, "CPF inválido!", "Validação", JOptionPane.WARNING_MESSAGE);
                 txtCpf.requestFocus();
                 return false;
             }
-        } else {
+        } else { // Validação para Estrangeiro
             if (txtPassaporte.getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Passaporte é obrigatório!", "Validação", JOptionPane.WARNING_MESSAGE);
                 txtPassaporte.requestFocus();

@@ -4,28 +4,28 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
- * Esta classe gera o script SQL (DDL) para criar a estrutura do banco de dados
- * da agência de turismo, com base nos modelos de dados do projeto.
+ * Classe funcional que se conecta diretamente ao MySQL para criar e configurar
+ * o banco de dados e as tabelas necessárias para a aplicação.
+ * ESTA VERSÃO CRIA A TABELA 'contratos' CORRETAMENTE.
  */
 public class GeradorBancoDados {
 
+    // --- DADOS DE CONEXÃO ---
     private static final String SERVER_URL = "jdbc:mysql://localhost:3306";
     private static final String DB_NAME = "agencia_viagens";
-    private static final String USER = "root"; // Coloque seu usuário do MySQL aqui
-    private static final String PASS = "ceub123456"; // <<<<<< COLOQUE SUA SENHA DO MYSQL AQUI
+    private static final String USER = "root";
+    private static final String PASS = "ceub123456"; // Sua senha do MySQL
 
     public static void main(String[] args) {
         try {
             System.out.println("-> Iniciando configuração do banco de dados...");
 
-            // 1. Criar o banco de dados
+            // 1. Garante que o banco de dados exista
             criarDatabase();
 
-            // 2. Criar as tabelas dentro do banco de dados
+            // 2. Cria as tabelas dentro do banco
             criarTabelas();
 
             System.out.println("\n[SUCESSO] Configuração do banco de dados finalizada com sucesso!");
@@ -93,27 +93,29 @@ public class GeradorBancoDados {
                             "    categoria VARCHAR(100)" +
                             ");",
 
-                    // Tabela de Associação: Cliente <-> Pacote
-                    "CREATE TABLE IF NOT EXISTS cliente_pacote (" +
-                            "    id_cliente INT," +
-                            "    id_pacote INT," +
-                            "    data_contratacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
-                            "    PRIMARY KEY (id_cliente, id_pacote)," +
-                            "    FOREIGN KEY (id_cliente) REFERENCES clientes(id) ON DELETE CASCADE," +
-                            "    FOREIGN KEY (id_pacote) REFERENCES pacotes_viagem(id) ON DELETE RESTRICT" +
-                            ");",
-
                     // Tabela de Associação: Pacote <-> Serviço
                     "CREATE TABLE IF NOT EXISTS pacote_servico (" +
-                            "    id_pacote INT," +
-                            "    id_servico INT," +
-                            "    PRIMARY KEY (id_pacote, id_servico)," +
-                            "    FOREIGN KEY (id_pacote) REFERENCES pacotes_viagem(id) ON DELETE CASCADE," +
-                            "    FOREIGN KEY (id_servico) REFERENCES servicos_adicionais(id) ON DELETE CASCADE" +
+                            "    pacote_id INT," +
+                            "    servico_id INT," +
+                            "    PRIMARY KEY (pacote_id, servico_id)," +
+                            "    FOREIGN KEY (pacote_id) REFERENCES pacotes_viagem(id) ON DELETE CASCADE," +
+                            "    FOREIGN KEY (servico_id) REFERENCES servicos_adicionais(id) ON DELETE CASCADE" +
+                            ");",
+
+                    // ***** TABELA DE CONTRATOS CORRIGIDA *****
+                    // Esta tabela armazena a relação entre um cliente e um pacote contratado.
+                    "CREATE TABLE IF NOT EXISTS contratos (" +
+                            "    id INT AUTO_INCREMENT PRIMARY KEY," +
+                            "    cliente_id INT NOT NULL," +
+                            "    pacote_id INT NOT NULL," +
+                            "    data_contrato TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+                            "    FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE," +
+                            "    FOREIGN KEY (pacote_id) REFERENCES pacotes_viagem(id) ON DELETE RESTRICT" +
                             ");"
             };
 
             for (String sql : sqlScripts) {
+                // System.out.println("Executando: " + sql); // Descomente para debug
                 stmt.execute(sql);
             }
 
