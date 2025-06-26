@@ -5,17 +5,20 @@ import org.example.model.pacoteviagem.PacoteViagem;
 import org.example.model.servicoadicional.ServicoAdicional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class ClientePacote {
     private int id;
     private Cliente cliente;
     private PacoteViagem pacote;
-    private List<ServicoAdicional> servicos = new ArrayList<>();
+    private final List<ServicoAdicional> servicos;
 
     public ClientePacote(Cliente cliente, PacoteViagem pacote) {
-        this.cliente = cliente;
-        this.pacote = pacote;
+        this.cliente = Objects.requireNonNull(cliente, "Cliente não pode ser nulo");
+        this.pacote = Objects.requireNonNull(pacote, "Pacote não pode ser nulo");
+        this.servicos = new ArrayList<>();
     }
 
     public int getId() {
@@ -31,7 +34,7 @@ public class ClientePacote {
     }
 
     public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+        this.cliente = Objects.requireNonNull(cliente, "Cliente não pode ser nulo");
     }
 
     public PacoteViagem getPacote() {
@@ -39,19 +42,26 @@ public class ClientePacote {
     }
 
     public void setPacote(PacoteViagem pacote) {
-        this.pacote = pacote;
+        this.pacote = Objects.requireNonNull(pacote, "Pacote não pode ser nulo");
     }
 
     public List<ServicoAdicional> getServicos() {
-        return servicos;
+        return Collections.unmodifiableList(servicos);
     }
 
     public void adicionarServico(ServicoAdicional servico) {
-        this.servicos.add(servico);
+        if (servico != null && !servicos.contains(servico)) {
+            servicos.add(servico);
+        }
     }
 
     public void removerServico(ServicoAdicional servico) {
-        this.servicos.remove(servico);
+        servicos.remove(servico);
+    }
+
+    public void limparServicos() {
+        servicos.clear();
     }
 }
+
 

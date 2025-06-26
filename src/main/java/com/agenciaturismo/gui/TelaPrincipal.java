@@ -185,7 +185,7 @@ public class TelaPrincipal extends JFrame {
     public static void main(String[] args) {
         // Configurar Look and Feel
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeel());
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
             e.printStackTrace();
         }

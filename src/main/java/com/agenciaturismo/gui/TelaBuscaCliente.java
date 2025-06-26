@@ -6,20 +6,19 @@ import com.agenciaturismo.model.Cliente;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class TelaBuscaCliente extends JDialog {
+
     private JTextField txtNomeBusca;
     private JTable tabelaResultados;
     private DefaultTableModel modeloTabela;
-    private ClienteDAO clienteDAO;
+    private final ClienteDAO clienteDAO = new ClienteDAO();
 
     public TelaBuscaCliente(Frame parent) {
         super(parent, "Buscar Cliente", true);
-        this.clienteDAO = new ClienteDAO();
         initComponents();
         configurarJanela();
     }
@@ -27,26 +26,31 @@ public class TelaBuscaCliente extends JDialog {
     private void initComponents() {
         setLayout(new BorderLayout());
 
-        // Painel de busca
-        JPanel painelBusca = new JPanel(new FlowLayout());
+        add(criarPainelBusca(), BorderLayout.NORTH);
+        add(criarTabelaResultados(), BorderLayout.CENTER);
+        add(criarPainelBotoes(), BorderLayout.SOUTH);
+    }
+
+    private JPanel criarPainelBusca() {
+        JPanel painelBusca = new JPanel(new FlowLayout(FlowLayout.LEFT));
         painelBusca.setBorder(BorderFactory.createTitledBorder("Buscar Cliente"));
-        
+
         painelBusca.add(new JLabel("Nome:"));
+
         txtNomeBusca = new JTextField(20);
         painelBusca.add(txtNomeBusca);
-        
+
         JButton btnBuscar = new JButton("Buscar");
-        btnBuscar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                buscarClientes();
-            }
-        });
+        btnBuscar.setMnemonic(KeyEvent.VK_B);
+        btnBuscar.addActionListener(e -> buscarClientes());
         painelBusca.add(btnBuscar);
 
-        add(painelBusca, BorderLayout.NORTH);
+        txtNomeBusca.addActionListener(e -> buscarClientes());
 
-        // Tabela de resultados
+        return painelBusca;
+    }
+
+    private JScrollPane criarTabelaResultados() {
         String[] colunas = {"ID", "Nome", "E-mail", "Telefone", "Data Nascimento", "Tipo", "Documento"};
         modeloTabela = new DefaultTableModel(colunas, 0) {
             @Override
@@ -54,46 +58,50 @@ public class TelaBuscaCliente extends JDialog {
                 return false;
             }
         };
-        
+
         tabelaResultados = new JTable(modeloTabela);
         tabelaResultados.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
+
         JScrollPane scrollPane = new JScrollPane(tabelaResultados);
         scrollPane.setPreferredSize(new Dimension(700, 350));
-        
-        add(scrollPane, BorderLayout.CENTER);
+        return scrollPane;
+    }
 
-        // Painel de botões
-        JPanel painelBotoes = new JPanel(new FlowLayout());
+    private JPanel criarPainelBotoes() {
+        JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
         JButton btnFechar = new JButton("Fechar");
+        btnFechar.setMnemonic(KeyEvent.VK_F);
         btnFechar.addActionListener(e -> dispose());
         painelBotoes.add(btnFechar);
 
-        add(painelBotoes, BorderLayout.SOUTH);
-
-        // Listener para Enter no campo de busca
-        txtNomeBusca.addActionListener(e -> buscarClientes());
+        return painelBotoes;
     }
 
     private void buscarClientes() {
         String nomeBusca = txtNomeBusca.getText().trim();
-        
+
         if (nomeBusca.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Digite um nome para buscar!", "Aviso", JOptionPane.WARNING_MESSAGE);
             txtNomeBusca.requestFocus();
             return;
         }
 
-        modeloTabela.setRowCount(0);
-        
         List<Cliente> clientes = clienteDAO.buscarPorNome(nomeBusca);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        
+        modeloTabela.setRowCount(0);
+
         if (clientes.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Nenhum cliente encontrado com esse nome!", "Resultado", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            for (Cliente cliente : clientes) {
-                Object[] linha = {
+            preencherTabela(clientes);
+        }
+    }
+
+    private void preencherTabela(List<Cliente> clientes) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        for (Cliente cliente : clientes) {
+            modeloTabela.addRow(new Object[]{
                     cliente.getId(),
                     cliente.getNome(),
                     cliente.getEmail(),
@@ -101,9 +109,7 @@ public class TelaBuscaCliente extends JDialog {
                     sdf.format(cliente.getDataNascimento()),
                     cliente.getTipoCliente(),
                     cliente.getDocumento()
-                };
-                modeloTabela.addRow(linha);
-            }
+            });
         }
     }
 
@@ -111,5 +117,6 @@ public class TelaBuscaCliente extends JDialog {
         setSize(750, 500);
         setLocationRelativeTo(getParent());
         setResizable(true);
+        getRootPane().setDefaultButton(null); // Ou: getRootPane().setDefaultButton(btnBuscar); se quiser ativar Enter
     }
-} 
+}
