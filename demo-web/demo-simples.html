@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Sistema Agência Turismo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; text-align: center; }
+        h2 { color: #666; border-bottom: 2px solid #ddd; padding-bottom: 5px; }
+        .menu {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover { background: #0056b3; }
+        .section {
+            display: none;
+            margin: 20px 0;
+        }
+        .section.active { display: block; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th { background: #f8f9fa; }
+        input, select {
+            width: 100%;
+            padding: 5px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .form-row > div {
+            flex: 1;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 3px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 3px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌍 Sistema Agência de Turismo - Demo</h1>
+        <p><strong>Demonstração do sistema Java Swing desenvolvido</strong></p>
+        
+        <div class="menu">
+            <button onclick="showSection('clientes')">👥 Clientes</button>
+            <button onclick="showSection('pacotes')">🎒 Pacotes</button>
+            <button onclick="showSection('contratos')">📝 Contratos</button>
+            <button onclick="showSection('validacoes')">🔍 Validações</button>
+            <button onclick="showSection('info')">ℹ️ Info Sistema</button>
+        </div>
+
+        <!-- Seção Clientes -->
+        <div id="clientes" class="section">
+            <h2>👥 Gerenciamento de Clientes</h2>
+            
+            <h3>Cadastrar Cliente</h3>
+            <form onsubmit="cadastrarCliente(event)">
+                <div class="form-row">
+                    <div>
+                        <label>Nome:</label>
+                        <input type="text" id="nome" required>
+                    </div>
+                    <div>
+                        <label>Email:</label>
+                        <input type="email" id="email" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div>
+                        <label>Tipo:</label>
+                        <select id="tipo" onchange="toggleDoc()">
+                            <option value="">Selecione</option>
+                            <option value="Nacional">Nacional (CPF)</option>
+                            <option value="Estrangeiro">Estrangeiro (Passaporte)</option>
+                        </select>
+                    </div>
+                    <div id="docField" style="display:none;">
+                        <label id="docLabel">Documento:</label>
+                        <input type="text" id="documento">
+                    </div>
+                </div>
+                
+                <button type="submit">Cadastrar</button>
+            </form>
+            
+            <div id="msgCliente"></div>
+            
+            <h3>Clientes Cadastrados</h3>
+            <table id="tabelaClientes">
+                <thead>
+                    <tr><th>ID</th><th>Nome</th><th>Email</th><th>Tipo</th><th>Documento</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>João Silva</td><td>joao@email.com</td><td>Nacional</td><td>123.456.789-00</td></tr>
+                    <tr><td>2</td><td>Maria Santos</td><td>maria@email.com</td><td>Nacional</td><td>987.654.321-00</td></tr>
+                    <tr><td>3</td><td>John Smith</td><td>john@email.com</td><td>Estrangeiro</td><td>US1234567</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Seção Pacotes -->
+        <div id="pacotes" class="section">
+            <h2>🎒 Pacotes de Viagem</h2>
+            
+            <h3>Cadastrar Pacote</h3>
+            <form onsubmit="cadastrarPacote(event)">
+                <div class="form-row">
+                    <div>
+                        <label>Nome:</label>
+                        <input type="text" id="pacoteNome" required>
+                    </div>
+                    <div>
+                        <label>Destino:</label>
+                        <input type="text" id="pacoteDestino" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div>
+                        <label>Preço (R$):</label>
+                        <input type="number" id="pacotePreco" step="0.01" min="0" required>
+                    </div>
+                    <div>
+                        <label>Vagas:</label>
+                        <input type="number" id="pacoteVagas" min="1" required>
+                    </div>
+                </div>
+                
+                <button type="submit">Cadastrar Pacote</button>
+            </form>
+            
+            <div id="msgPacote"></div>
+            
+            <h3>Pacotes Disponíveis</h3>
+            <table id="tabelaPacotes">
+                <thead>
+                    <tr><th>ID</th><th>Nome</th><th>Destino</th><th>Preço</th><th>Vagas</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>Paris Romântica</td><td>Paris, França</td><td>R$ 4.500,00</td><td>15</td></tr>
+                    <tr><td>2</td><td>Tokyo Experience</td><td>Tokyo, Japão</td><td>R$ 6.800,00</td><td>12</td></tr>
+                    <tr><td>3</td><td>New York City</td><td>Nova York, EUA</td><td>R$ 5.200,00</td><td>20</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Seção Contratos -->
+        <div id="contratos" class="section">
+            <h2>📝 Contratos</h2>
+            
+            <h3>Contratos Ativos</h3>
+            <table>
+                <thead>
+                    <tr><th>Cliente</th><th>Pacote</th><th>Destino</th><th>Valor</th><th>Data</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>João Silva</td><td>Paris Romântica</td><td>Paris, França</td><td>R$ 4.500,00</td><td>15/06/2024</td></tr>
+                    <tr><td>Maria Santos</td><td>Tokyo Experience</td><td>Tokyo, Japão</td><td>R$ 6.800,00</td><td>20/06/2024</td></tr>
+                </tbody>
+            </table>
+            
+            <p><strong>Funcionalidades:</strong></p>
+            <ul>
+                <li>✅ Contratação de pacotes por clientes</li>
+                <li>✅ Controle de vagas disponíveis</li>
+                <li>✅ Consulta por cliente ou pacote</li>
+                <li>✅ Relatórios de faturamento</li>
+            </ul>
+        </div>
+
+        <!-- Seção Validações -->
+        <div id="validacoes" class="section">
+            <h2>🔍 Validações</h2>
+            
+            <h3>Teste de CPF</h3>
+            <input type="text" id="testeCPF" placeholder="Digite um CPF" oninput="validarCPFTeste()">
+            <div id="resultCPF"></div>
+            
+            <h3>Teste de Email</h3>
+            <input type="text" id="testeEmail" placeholder="Digite um email" oninput="validarEmailTeste()">
+            <div id="resultEmail"></div>
+            
+            <h3>Regras Implementadas</h3>
+            <ul>
+                <li><strong>CPF:</strong> Algoritmo oficial de validação</li>
+                <li><strong>Email:</strong> Formato padrão com @</li>
+                <li><strong>Preços:</strong> Devem ser positivos</li>
+                <li><strong>Datas:</strong> Data fim > data início</li>
+                <li><strong>Duplicação:</strong> Não permite registros iguais</li>
+            </ul>
+        </div>
+
+        <!-- Seção Info -->
+        <div id="info" class="section">
+            <h2>ℹ️ Informações do Sistema</h2>
+            
+            <h3>🏗️ Arquitetura</h3>
+            <ul>
+                <li><strong>Linguagem:</strong> Java 11+ com Swing</li>
+                <li><strong>Banco:</strong> MySQL com JDBC</li>
+                <li><strong>Padrões:</strong> MVC, DAO, Singleton</li>
+                <li><strong>POO:</strong> Herança, Encapsulamento, Polimorfismo</li>
+            </ul>
+            
+            <h3>📁 Estrutura</h3>
+            <pre>
+src/main/java/com/agenciaturismo/
+├── model/ (Cliente, PacoteViagem, etc.)
+├── dao/ (ClienteDAO, PacoteDAO, etc.)
+├── gui/ (TelaPrincipal, TelaCadastro, etc.)
+└── util/ (DatabaseConnection, Validadores)
+            </pre>
+            
+            <h3>🎯 Funcionalidades</h3>
+            <ul>
+                <li>✅ CRUD completo de clientes e pacotes</li>
+                <li>✅ Sistema de contratos</li>
+                <li>✅ Validações em tempo real</li>
+                <li>✅ Interface gráfica Swing</li>
+                <li>✅ Relatórios e consultas</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let clientes = [];
+        let pacotes = [];
+        let nextId = 4;
+
+        function showSection(sectionId) {
+            // Esconder todas as seções
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            // Mostrar seção selecionada
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function toggleDoc() {
+            const tipo = document.getElementById('tipo').value;
+            const docField = document.getElementById('docField');
+            const docLabel = document.getElementById('docLabel');
+            
+            if (tipo === 'Nacional') {
+                docField.style.display = 'block';
+                docLabel.textContent = 'CPF:';
+                document.getElementById('documento').placeholder = '000.000.000-00';
+            } else if (tipo === 'Estrangeiro') {
+                docField.style.display = 'block';
+                docLabel.textContent = 'Passaporte:';
+                document.getElementById('documento').placeholder = 'AB1234567';
+            } else {
+                docField.style.display = 'none';
+            }
+        }
+
+        function cadastrarCliente(e) {
+            e.preventDefault();
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const tipo = document.getElementById('tipo').value;
+            const documento = document.getElementById('documento').value;
+            
+            // Validar CPF se for nacional
+            if (tipo === 'Nacional' && !validarCPF(documento)) {
+                document.getElementById('msgCliente').innerHTML = '<div class="error">CPF inválido!</div>';
+                return;
+            }
+            
+            // Adicionar à tabela
+            const tbody = document.querySelector('#tabelaClientes tbody');
+            const row = tbody.insertRow();
+            row.innerHTML = `<td>${nextId}</td><td>${nome}</td><td>${email}</td><td>${tipo}</td><td>${documento}</td>`;
+            
+            document.getElementById('msgCliente').innerHTML = '<div class="success">Cliente cadastrado com sucesso!</div>';
+            
+            // Limpar form
+            e.target.reset();
+            document.getElementById('docField').style.display = 'none';
+            nextId++;
+            
+            setTimeout(() => document.getElementById('msgCliente').innerHTML = '', 3000);
+        }
+
+        function cadastrarPacote(e) {
+            e.preventDefault();
+            const nome = document.getElementById('pacoteNome').value;
+            const destino = document.getElementById('pacoteDestino').value;
+            const preco = parseFloat(document.getElementById('pacotePreco').value);
+            const vagas = parseInt(document.getElementById('pacoteVagas').value);
+            
+            // Adicionar à tabela
+            const tbody = document.querySelector('#tabelaPacotes tbody');
+            const row = tbody.insertRow();
+            row.innerHTML = `<td>${nextId}</td><td>${nome}</td><td>${destino}</td><td>R$ ${preco.toFixed(2)}</td><td>${vagas}</td>`;
+            
+            document.getElementById('msgPacote').innerHTML = '<div class="success">Pacote cadastrado com sucesso!</div>';
+            
+            // Limpar form
+            e.target.reset();
+            nextId++;
+            
+            setTimeout(() => document.getElementById('msgPacote').innerHTML = '', 3000);
+        }
+
+        function validarCPF(cpf) {
+            cpf = cpf.replace(/[^\d]/g, '');
+            if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+            
+            let soma = 0;
+            for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
+            let resto = 11 - (soma % 11);
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.charAt(9))) return false;
+            
+            soma = 0;
+            for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
+            resto = 11 - (soma % 11);
+            if (resto === 10 || resto === 11) resto = 0;
+            return resto === parseInt(cpf.charAt(10));
+        }
+
+        function validarCPFTeste() {
+            const cpf = document.getElementById('testeCPF').value;
+            const result = document.getElementById('resultCPF');
+            
+            if (cpf.length === 0) {
+                result.innerHTML = '';
+                return;
+            }
+            
+            if (validarCPF(cpf)) {
+                result.innerHTML = '<div class="success">✅ CPF válido!</div>';
+            } else {
+                result.innerHTML = '<div class="error">❌ CPF inválido!</div>';
+            }
+        }
+
+        function validarEmailTeste() {
+            const email = document.getElementById('testeEmail').value;
+            const result = document.getElementById('resultEmail');
+            
+            if (email.length === 0) {
+                result.innerHTML = '';
+                return;
+            }
+            
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (regex.test(email)) {
+                result.innerHTML = '<div class="success">✅ Email válido!</div>';
+            } else {
+                result.innerHTML = '<div class="error">❌ Email inválido!</div>';
+            }
+        }
+
+        // Mostrar primeira seção por padrão
+        showSection('clientes');
+    </script>
+</body>
+</html> 

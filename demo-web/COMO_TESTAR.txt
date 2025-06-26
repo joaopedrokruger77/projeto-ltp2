@@ -1,0 +1,57 @@
+🌍 SISTEMA DE AGÊNCIA DE TURISMO - COMO TESTAR
+====================================================
+
+📋 INSTRUÇÕES PARA TESTE:
+
+1. ABRIR A DEMONSTRAÇÃO:
+   - Clique duas vezes no arquivo "demo-simples.html"
+   - OU arraste o arquivo para dentro do navegador
+   - OU abra o navegador e pressione Ctrl+O, depois selecione o arquivo
+
+2. O QUE VOCÊ PODE TESTAR:
+
+   👥 ABA CLIENTES:
+   - Cadastrar novos clientes (nacionais com CPF ou estrangeiros)
+   - Ver validação de CPF em tempo real
+   - Lista de clientes já cadastrados
+
+   🎒 ABA PACOTES:
+   - Cadastrar novos pacotes de viagem
+   - Definir preços e vagas
+   - Ver pacotes disponíveis
+
+   📝 ABA CONTRATOS:
+   - Ver contratos já realizados
+   - Entender como funciona o sistema de contratação
+
+   🔍 ABA VALIDAÇÕES:
+   - Testar validação de CPF (experimente: 11144477735)
+   - Testar validação de email
+   - Ver todas as regras implementadas
+
+   ℹ️ ABA INFO SISTEMA:
+   - Ver arquitetura completa do projeto
+   - Estrutura de pastas e classes
+   - Tecnologias utilizadas
+
+3. FUNCIONALIDADES DEMONSTRADAS:
+   ✅ Cadastro completo (CRUD)
+   ✅ Validações em tempo real
+   ✅ Interface gráfica simulada
+   ✅ Conceitos de POO
+   ✅ Integração com banco de dados (estrutura)
+   ✅ Sistema de contratos
+
+4. OBSERVAÇÕES:
+   - Esta é uma DEMONSTRAÇÃO WEB do sistema Java Swing
+   - Todos os dados são salvos apenas durante a sessão
+   - As validações são as mesmas do sistema original
+   - A interface simula as telas do Java Swing
+
+5. SISTEMA ORIGINAL:
+   - O sistema real é feito em Java com interface Swing
+   - Usa MySQL como banco de dados
+   - Possui 11 telas diferentes
+   - Implementa todos os padrões de POO
+
+📞 DÚVIDAS: Entre em contato se precisar de esclarecimentos! 

@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Agência de Turismo - Demo Online</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .demo-info {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .menu-card {
+            background: rgba(255,255,255,0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+        }
+
+        .menu-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .menu-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 2% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 95%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .status-ativo {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-contratado {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .validation-error {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #c3e6cb;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .feature-list li:before {
+            content: "✅ ";
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 Sistema de Agência de Turismo</h1>
+            <p>Demonstração Online - Versão Java Swing</p>
+        </div>
+
+        <div class="demo-info">
+            <h2>📋 Sobre Esta Demonstração</h2>
+            <p><strong>Esta é uma versão web interativa</strong> que simula o sistema Java Swing desenvolvido. 
+            Todas as funcionalidades principais estão disponíveis para teste, incluindo:</p>
+            <ul style="margin: 15px 0 15px 30px;">
+                <li>✅ Cadastro de clientes nacionais e estrangeiros</li>
+                <li>✅ Gerenciamento de pacotes de viagem</li>
+                <li>✅ Sistema de contratos e contratações</li>
+                <li>✅ Validações em tempo real (CPF, email, etc.)</li>
+                <li>✅ Consultas e relatórios</li>
+            </ul>
+            <p><strong>💡 Dica:</strong> Clique em qualquer card abaixo para explorar as funcionalidades!</p>
+        </div>
+
+        <div class="menu-grid">
+            <div class="menu-card" onclick="openModal('clientesModal')">
+                <h3>👥 Gerenciamento de Clientes</h3>
+                <p>Cadastre e gerencie clientes nacionais (com CPF) e estrangeiros (com passaporte). 
+                Inclui validações automáticas e busca avançada.</p>
+                <button class="btn">Explorar Clientes</button>
+            </div>
+
+            <div class="menu-card" onclick="openModal('pacotesModal')">
+                <h3>🎒 Pacotes de Viagem</h3>
+                <p>Crie e gerencie pacotes de viagem com destinos, preços, datas e controle de vagas. 
+                Sistema completo de validações.</p>
+                <button class="btn">Explorar Pacotes</button>
+            </div>
+
+            <div class="menu-card" onclick="openModal('servicosModal')">
+                <h3>⭐ Serviços Adicionais</h3>
+                <p>Cadastre serviços extras como seguro viagem, transfer, city tour e outros 
+                complementos para os pacotes.</p>
+                <button class="btn">Explorar Serviços</button>
+            </div>
+
+            <div class="menu-card" onclick="openModal('contratosModal')">
+                <h3>📝 Sistema de Contratos</h3>
+                <p>Realize contratações de pacotes por clientes, consulte contratos existentes 
+                e gere relatórios detalhados.</p>
+                <button class="btn">Explorar Contratos</button>
+            </div>
+
+            <div class="menu-card" onclick="openModal('validacoesModal')">
+                <h3>🔍 Validações do Sistema</h3>
+                <p>Teste as validações implementadas: CPF, email, passaporte, datas, 
+                preços e regras de negócio.</p>
+                <button class="btn">Testar Validações</button>
+            </div>
+
+            <div class="menu-card" onclick="openModal('arquiteturaModal')">
+                <h3>🏗️ Arquitetura do Sistema</h3>
+                <p>Conheça a estrutura do projeto: padrão MVC, DAO, POO com herança, 
+                integração MySQL e organização das classes.</p>
+                <button class="btn">Ver Arquitetura</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Clientes -->
+    <div id="clientesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('clientesModal')">&times;</span>
+            <h2>👥 Gerenciamento de Clientes</h2>
+            
+            <div style="margin: 20px 0;">
+                <button class="btn" onclick="showSection('cadastroCliente')">Cadastrar Cliente</button>
+                <button class="btn" onclick="showSection('listagemClientes')">Listar Clientes</button>
+                <button class="btn" onclick="showSection('buscaCliente')">Buscar Cliente</button>
+            </div>
+
+            <div id="cadastroCliente" style="display: none;">
+                <h3>📝 Cadastro de Cliente</h3>
+                <form onsubmit="cadastrarCliente(event)">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Nome Completo *</label>
+                            <input type="text" id="clienteNome" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" id="clienteEmail" required>
+                        </div>
+                    </div>
+                    
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Telefone *</label>
+                            <input type="tel" id="clienteTelefone" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Data de Nascimento *</label>
+                            <input type="date" id="clienteDataNascimento" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tipo de Cliente *</label>
+                        <select id="clienteTipo" onchange="toggleDocumento()" required>
+                            <option value="">Selecione...</option>
+                            <option value="Nacional">Nacional (CPF)</option>
+                            <option value="Estrangeiro">Estrangeiro (Passaporte)</option>
+                        </select>
+                    </div>
+
+                    <div id="documentoNacional" style="display: none;">
+                        <div class="form-group">
+                            <label>CPF *</label>
+                            <input type="text" id="clienteCPF" placeholder="000.000.000-00" maxlength="14">
+                            <div id="cpfError" class="validation-error"></div>
+                        </div>
+                    </div>
+
+                    <div id="documentoEstrangeiro" style="display: none;">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Passaporte *</label>
+                                <input type="text" id="clientePassaporte" placeholder="AB1234567">
+                            </div>
+                            <div class="form-group">
+                                <label>Nacionalidade *</label>
+                                <input type="text" id="clienteNacionalidade" placeholder="Ex: Americana">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn">Cadastrar Cliente</button>
+                </form>
+                <div id="clienteSuccess" style="display: none;"></div>
+            </div>
+
+            <div id="listagemClientes" style="display: none;">
+                <h3>📋 Lista de Clientes Cadastrados</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Tipo</th>
+                            <th>Documento</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaClientes">
+                        <tr>
+                            <td>1</td>
+                            <td>João Silva</td>
+                            <td>joao@email.com</td>
+                            <td>Nacional</td>
+                            <td>123.456.789-00</td>
+                            <td><span class="status-badge status-ativo">Ativo</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Maria Santos</td>
+                            <td>maria@email.com</td>
+                            <td>Nacional</td>
+                            <td>987.654.321-00</td>
+                            <td><span class="status-badge status-ativo">Ativo</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>John Smith</td>
+                            <td>john@email.com</td>
+                            <td>Estrangeiro</td>
+                            <td>US1234567</td>
+                            <td><span class="status-badge status-ativo">Ativo</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="buscaCliente" style="display: none;">
+                <h3>🔍 Buscar Cliente</h3>
+                <div class="form-group">
+                    <label>Nome do Cliente</label>
+                    <input type="text" id="buscaNome" placeholder="Digite o nome para buscar..." oninput="buscarCliente()">
+                </div>
+                <div id="resultadoBusca"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pacotes -->
+    <div id="pacotesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('pacotesModal')">&times;</span>
+            <h2>🎒 Gerenciamento de Pacotes</h2>
+            
+            <div style="margin: 20px 0;">
+                <button class="btn" onclick="showSection('cadastroPacote')">Cadastrar Pacote</button>
+                <button class="btn" onclick="showSection('listagemPacotes')">Listar Pacotes</button>
+            </div>
+
+            <div id="cadastroPacote" style="display: none;">
+                <h3>📝 Cadastro de Pacote</h3>
+                <form onsubmit="cadastrarPacote(event)">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Nome do Pacote *</label>
+                            <input type="text" id="pacoteNome" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Destino *</label>
+                            <input type="text" id="pacoteDestino" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <textarea id="pacoteDescricao" rows="3"></textarea>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Preço (R$) *</label>
+                            <input type="number" id="pacotePreco" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Vagas Disponíveis *</label>
+                            <input type="number" id="pacoteVagas" min="1" required>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Data de Início *</label>
+                            <input type="date" id="pacoteDataInicio" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Data de Fim *</label>
+                            <input type="date" id="pacoteDataFim" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn">Cadastrar Pacote</button>
+                </form>
+                <div id="pacoteSuccess" style="display: none;"></div>
+            </div>
+
+            <div id="listagemPacotes" style="display: none;">
+                <h3>📋 Pacotes Disponíveis</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Destino</th>
+                            <th>Preço</th>
+                            <th>Período</th>
+                            <th>Vagas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Paris Romântica</td>
+                            <td>Paris, França</td>
+                            <td>R$ 4.500,00</td>
+                            <td>15/07 - 22/07</td>
+                            <td>15</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Tokyo Experience</td>
+                            <td>Tokyo, Japão</td>
+                            <td>R$ 6.800,00</td>
+                            <td>01/08 - 10/08</td>
+                            <td>12</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>New York City</td>
+                            <td>Nova York, EUA</td>
+                            <td>R$ 5.200,00</td>
+                            <td>20/09 - 27/09</td>
+                            <td>20</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Serviços -->
+    <div id="servicosModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('servicosModal')">&times;</span>
+            <h2>⭐ Serviços Adicionais</h2>
+            
+            <div class="info-box">
+                <h4>📋 Serviços Disponíveis</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Serviço</th>
+                            <th>Categoria</th>
+                            <th>Preço</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Seguro Viagem</td>
+                            <td>Proteção</td>
+                            <td>R$ 150,00</td>
+                            <td>Cobertura médica internacional</td>
+                        </tr>
+                        <tr>
+                            <td>Transfer Aeroporto</td>
+                            <td>Transporte</td>
+                            <td>R$ 80,00</td>
+                            <td>Transporte do/para aeroporto</td>
+                        </tr>
+                        <tr>
+                            <td>City Tour</td>
+                            <td>Passeio</td>
+                            <td>R$ 200,00</td>
+                            <td>Tour guiado pela cidade</td>
+                        </tr>
+                        <tr>
+                            <td>Wi-Fi Portátil</td>
+                            <td>Conectividade</td>
+                            <td>R$ 25,00/dia</td>
+                            <td>Internet móvel durante a viagem</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box">
+                <h4>🎯 Funcionalidades do Sistema</h4>
+                <ul class="feature-list">
+                    <li>Cadastro de novos serviços com categorização</li>
+                    <li>Precificação flexível (valor fixo ou por dia)</li>
+                    <li>Associação automática com pacotes contratados</li>
+                    <li>Relatórios de serviços mais contratados</li>
+                    <li>Gestão de disponibilidade por destino</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Contratos -->
+    <div id="contratosModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('contratosModal')">&times;</span>
+            <h2>📝 Sistema de Contratos</h2>
+            
+            <div class="info-box">
+                <h4>📋 Contratos Ativos</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Pacote</th>
+                            <th>Destino</th>
+                            <th>Data Contrato</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>João Silva</td>
+                            <td>Paris Romântica</td>
+                            <td>Paris, França</td>
+                            <td>15/06/2024</td>
+                            <td>R$ 4.500,00</td>
+                            <td><span class="status-badge status-contratado">Confirmado</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Maria Santos</td>
+                            <td>Tokyo Experience</td>
+                            <td>Tokyo, Japão</td>
+                            <td>20/06/2024</td>
+                            <td>R$ 6.800,00</td>
+                            <td><span class="status-badge status-contratado">Confirmado</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="grid-2">
+                <div class="info-box">
+                    <h4>👥 Consulta por Cliente</h4>
+                    <p>Visualize todos os pacotes contratados por um cliente específico, incluindo:</p>
+                    <ul style="margin-left: 20px;">
+                        <li>Histórico de contratações</li>
+                        <li>Serviços adicionais inclusos</li>
+                        <li>Valor total investido</li>
+                        <li>Status dos pagamentos</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>🎒 Consulta por Pacote</h4>
+                    <p>Veja todos os clientes que contrataram um pacote específico:</p>
+                    <ul style="margin-left: 20px;">
+                        <li>Lista de participantes</li>
+                        <li>Controle de vagas ocupadas</li>
+                        <li>Receita total do pacote</li>
+                        <li>Análise de demanda</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>🎯 Funcionalidades Avançadas</h4>
+                <ul class="feature-list">
+                    <li>Validação de disponibilidade em tempo real</li>
+                    <li>Controle automático de vagas</li>
+                    <li>Prevenção de contratação duplicada</li>
+                    <li>Relatórios de faturamento por período</li>
+                    <li>Integração com sistema de pagamentos</li>
+                    <li>Notificações automáticas por email</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Validações -->
+    <div id="validacoesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('validacoesModal')">&times;</span>
+            <h2>🔍 Sistema de Validações</h2>
+            
+            <h3>✅ Validação de CPF</h3>
+            <div class="form-group">
+                <label>Digite um CPF para testar:</label>
+                <input type="text" id="testeCPF" placeholder="000.000.000-00" oninput="testarCPF()">
+                <div id="resultadoCPF"></div>
+            </div>
+
+            <h3>✅ Validação de Email</h3>
+            <div class="form-group">
+                <label>Digite um email para testar:</label>
+                <input type="text" id="testeEmail" placeholder="exemplo@email.com" oninput="testarEmail()">
+                <div id="resultadoEmail"></div>
+            </div>
+
+            <h3>✅ Validação de Passaporte</h3>
+            <div class="form-group">
+                <label>Digite um passaporte para testar:</label>
+                <input type="text" id="testePassaporte" placeholder="AB1234567" oninput="testarPassaporte()">
+                <div id="resultadoPassaporte"></div>
+            </div>
+
+            <div class="info-box">
+                <h4>📋 Regras Implementadas:</h4>
+                <ul style="margin-left: 20px; line-height: 1.8;">
+                    <li><strong>CPF:</strong> Algoritmo oficial de validação dos dígitos verificadores</li>
+                    <li><strong>Email:</strong> Formato padrão RFC com regex pattern</li>
+                    <li><strong>Passaporte:</strong> 6-15 caracteres alfanuméricos</li>
+                    <li><strong>Datas:</strong> Data fim deve ser posterior à data início</li>
+                    <li><strong>Preços:</strong> Valores devem ser positivos</li>
+                    <li><strong>Vagas:</strong> Não podem ser negativas</li>
+                    <li><strong>Campos Obrigatórios:</strong> Validação de preenchimento</li>
+                    <li><strong>Duplicação:</strong> Prevenção de registros duplicados</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h4>🎯 Exemplos para Teste:</h4>
+                <p><strong>CPFs Válidos:</strong> 11144477735, 12345678909</p>
+                <p><strong>CPFs Inválidos:</strong> 11111111111, 12345678901</p>
+                <p><strong>Emails Válidos:</strong> usuario@exemplo.com, teste@email.com.br</p>
+                <p><strong>Passaportes Válidos:</strong> AB1234567, US9876543, BR123456</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Arquitetura -->
+    <div id="arquiteturaModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('arquiteturaModal')">&times;</span>
+            <h2>🏗️ Arquitetura do Sistema</h2>
+            
+            <div class="info-box">
+                <h4>📁 Estrutura do Projeto</h4>
+                <pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; overflow-x: auto;">
+src/main/java/com/agenciaturismo/
+├── model/
+│   ├── Cliente.java (classe abstrata)
+│   ├── ClienteNacional.java (herda de Cliente)
+│   ├── ClienteEstrangeiro.java (herda de Cliente)
+│   ├── PacoteViagem.java
+│   └── ServicoAdicional.java
+├── dao/
+│   ├── ClienteDAO.java
+│   ├── PacoteViagemDAO.java
+│   ├── ServicoAdicionalDAO.java
+│   └── ContratoDAO.java
+├── gui/
+│   ├── TelaPrincipal.java
+│   ├── TelaCadastroCliente.java
+│   ├── TelaListagemClientes.java
+│   ├── TelaBuscaCliente.java
+│   ├── TelaCadastroPacote.java
+│   ├── TelaListagemPacotes.java
+│   ├── TelaBuscaPacote.java
+│   ├── TelaCadastroServico.java
+│   ├── TelaListagemServicos.java
+│   ├── TelaContratacao.java
+│   └── TelaConsultaContratos.java
+└── util/
+    ├── DatabaseConnection.java (Singleton)
+    └── ValidadorEmail.java
+                </pre>
+            </div>
+
+            <div class="grid-2">
+                <div class="info-box">
+                    <h4>🎯 Padrões Utilizados</h4>
+                    <ul class="feature-list">
+                        <li><strong>MVC:</strong> Model-View-Controller</li>
+                        <li><strong>DAO:</strong> Data Access Object</li>
+                        <li><strong>Singleton:</strong> Conexão com banco</li>
+                        <li><strong>Factory:</strong> Criação de clientes</li>
+                        <li><strong>Strategy:</strong> Validações específicas</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>🔧 Tecnologias</h4>
+                    <ul class="feature-list">
+                        <li><strong>Java 11+:</strong> Linguagem principal</li>
+                        <li><strong>Swing:</strong> Interface gráfica</li>
+                        <li><strong>MySQL:</strong> Banco de dados</li>
+                        <li><strong>JDBC:</strong> Conectividade</li>
+                        <li><strong>Maven:</strong> Gerenciamento</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>🎨 Conceitos de POO Implementados</h4>
+                <ul class="feature-list">
+                    <li><strong>Herança:</strong> ClienteNacional e ClienteEstrangeiro herdam de Cliente</li>
+                    <li><strong>Encapsulamento:</strong> Atributos privados com getters/setters</li>
+                    <li><strong>Polimorfismo:</strong> Métodos sobrescritos nas classes filhas</li>
+                    <li><strong>Abstração:</strong> Classe Cliente abstrata define comportamento comum</li>
+                    <li><strong>Composição:</strong> Relacionamentos entre classes</li>
+                    <li><strong>Interface:</strong> Contratos bem definidos entre camadas</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h4>🗄️ Banco de Dados</h4>
+                <p><strong>5 Tabelas principais:</strong></p>
+                <ul style="margin-left: 20px;">
+                    <li><strong>clientes:</strong> Dados dos clientes nacionais e estrangeiros</li>
+                    <li><strong>pacotes_viagem:</strong> Informações dos pacotes disponíveis</li>
+                    <li><strong>servicos_adicionais:</strong> Serviços opcionais</li>
+                    <li><strong>contratos:</strong> Relacionamento cliente-pacote</li>
+                    <li><strong>contrato_servicos:</strong> Serviços contratados</li>
+                </ul>
+                <p><strong>Recursos avançados:</strong> Views, índices, constraints, triggers</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html> 
