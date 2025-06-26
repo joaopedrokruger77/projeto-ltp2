@@ -383,10 +383,26 @@ src/main/java/com/agenciaturismo/
                 return;
             }
             
+            // Criar novo cliente no array
+            const novoCliente = {
+                id: nextId,
+                nome: nome,
+                email: email,
+                tipo: tipo,
+                documento: documento
+            };
+            
+            clientes.push(novoCliente);
+            
             // Adicionar à tabela
             const tbody = document.querySelector('#tabelaClientes tbody');
             const row = tbody.insertRow();
             row.innerHTML = `<td>${nextId}</td><td>${nome}</td><td>${email}</td><td>${tipo}</td><td>${documento}</td>`;
+            
+            // Atualizar selects dos contratos se existirem
+            if (document.getElementById('contratoCliente')) {
+                atualizarSelectsContratos();
+            }
             
             document.getElementById('msgCliente').innerHTML = '<div class="success">Cliente cadastrado com sucesso!</div>';
             
@@ -405,10 +421,26 @@ src/main/java/com/agenciaturismo/
             const preco = parseFloat(document.getElementById('pacotePreco').value);
             const vagas = parseInt(document.getElementById('pacoteVagas').value);
             
+            // Criar novo pacote no array
+            const novoPacote = {
+                id: nextId,
+                nome: nome,
+                destino: destino,
+                preco: preco,
+                vagas: vagas
+            };
+            
+            pacotes.push(novoPacote);
+            
             // Adicionar à tabela
             const tbody = document.querySelector('#tabelaPacotes tbody');
             const row = tbody.insertRow();
             row.innerHTML = `<td>${nextId}</td><td>${nome}</td><td>${destino}</td><td>R$ ${preco.toFixed(2)}</td><td>${vagas}</td>`;
+            
+            // Atualizar selects dos contratos se existirem
+            if (document.getElementById('contratoPacote')) {
+                atualizarSelectsContratos();
+            }
             
             document.getElementById('msgPacote').innerHTML = '<div class="success">Pacote cadastrado com sucesso!</div>';
             
