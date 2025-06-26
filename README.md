@@ -202,12 +202,4 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para de
 
 - **Equipe de Desenvolvimento** - *Desenvolvimento inicial* - [GitHub](https://github.com/usuario)
 
-## 🙏 Agradecimentos
 
-- Professores e colegas que contribuíram com feedback
-- Comunidade Java pelos recursos e documentação
-- Usuários beta que testaram o sistema
-
----
-
-**Desenvolvido com ❤️ para facilitar o gerenciamento de agências de turismo** 

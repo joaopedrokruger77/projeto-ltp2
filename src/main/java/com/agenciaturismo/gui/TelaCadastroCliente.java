@@ -245,7 +245,8 @@ public class TelaCadastroCliente extends JDialog {
                 return false;
             }
 
-            if (!ClienteNacional.validarCPF(txtCpf.getText().replaceAll("^\\d{11}$", ""))) {
+            // LINHA CORRIGIDA AQUI
+            if (!ClienteNacional.validarCPF(txtCpf.getText().replaceAll("[^0-11]", ""))) {
                 JOptionPane.showMessageDialog(this, "CPF inválido!", "Validação", JOptionPane.WARNING_MESSAGE);
                 txtCpf.requestFocus();
                 return false;
