@@ -95,7 +95,7 @@ public class TelaCadastroCliente extends JDialog {
         // Painel CPF valido
         JPanel painelCpf = new JPanel(new FlowLayout(FlowLayout.LEFT));
         painelCpf.add(new JLabel("CPF:"));
-        txtCpf = new JTextField(15);
+        txtCpf = new JTextField(11);
         painelCpf.add(txtCpf);
         
         // Painel Passaporte Cliente
@@ -245,7 +245,7 @@ public class TelaCadastroCliente extends JDialog {
                 return false;
             }
 
-            if (!ClienteNacional.validarCPF(txtCpf.getText().replaceAll("[^0-9]", ""))) {
+            if (!ClienteNacional.validarCPF(txtCpf.getText().replaceAll("^\\d{11}$", ""))) {
                 JOptionPane.showMessageDialog(this, "CPF inválido!", "Validação", JOptionPane.WARNING_MESSAGE);
                 txtCpf.requestFocus();
                 return false;
