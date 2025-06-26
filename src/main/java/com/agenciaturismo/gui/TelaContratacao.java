@@ -47,7 +47,7 @@ public class TelaContratacao extends JDialog {
         cbClientes.setPreferredSize(new Dimension(300, 25));
         painelPrincipal.add(cbClientes, gbc);
 
-        // Pacote
+
         gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 1; gbc.fill = GridBagConstraints.NONE;
         painelPrincipal.add(new JLabel("Pacote:"), gbc);
         gbc.gridx = 1; gbc.gridwidth = 2; gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -56,7 +56,7 @@ public class TelaContratacao extends JDialog {
         cbPacotes.addActionListener(e -> atualizarDetalhes());
         painelPrincipal.add(cbPacotes, gbc);
 
-        // Detalhes do pacote
+
         gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 1; gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         painelPrincipal.add(new JLabel("Detalhes:"), gbc);
@@ -71,7 +71,7 @@ public class TelaContratacao extends JDialog {
 
         add(painelPrincipal, BorderLayout.CENTER);
 
-        // Painel de botões
+
         JPanel painelBotoes = new JPanel(new FlowLayout());
         JButton btnContratar = new JButton("Contratar");
         JButton btnCancelar = new JButton("Cancelar");
@@ -92,14 +92,14 @@ public class TelaContratacao extends JDialog {
     }
 
     private void carregarDados() {
-        // Carregar clientes
+
         cbClientes.removeAllItems();
         List<Cliente> clientes = clienteDAO.listarTodos();
         for (Cliente cliente : clientes) {
             cbClientes.addItem(cliente);
         }
 
-        // Carregar pacotes
+
         cbPacotes.removeAllItems();
         List<PacoteViagem> pacotes = pacoteDAO.listarTodos();
         for (PacoteViagem pacote : pacotes) {
