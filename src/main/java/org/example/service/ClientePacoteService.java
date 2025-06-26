@@ -30,6 +30,6 @@ public class ClientePacoteService {
 
 
     public List<Long> listarServicosDoPedido(Long clienteId, Long pacoteId) {
-        return Collections.emptyList(); // ou lance uma exceção se preferir
+        return Collections.emptyList(); // ou lance uma exceção se preferir fazer assim
     }
 }
