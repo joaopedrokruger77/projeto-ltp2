@@ -33,4 +33,3 @@ public class ClientePacoteService {
         return Collections.emptyList(); // ou lance uma exceção se preferir
     }
 }
-+aura1000000000
