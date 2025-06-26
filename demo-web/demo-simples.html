@@ -195,24 +195,76 @@
         <div id="contratos" class="section">
             <h2>📝 Contratos</h2>
             
+            <h3>Nova Contratação</h3>
+            <form onsubmit="criarContrato(event)">
+                <div class="form-row">
+                    <div>
+                        <label>Cliente:</label>
+                        <select id="contratoCliente" required>
+                            <option value="">Selecione um cliente</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Pacote:</label>
+                        <select id="contratoPacote" required>
+                            <option value="">Selecione um pacote</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div>
+                        <label>Data do Contrato:</label>
+                        <input type="date" id="contratoData" required>
+                    </div>
+                    <div>
+                        <label>Observações:</label>
+                        <input type="text" id="contratoObs" placeholder="Opcional">
+                    </div>
+                </div>
+                
+                <button type="submit">Realizar Contratação</button>
+            </form>
+            
+            <div id="msgContrato"></div>
+            
             <h3>Contratos Ativos</h3>
-            <table>
+            <table id="tabelaContratos">
                 <thead>
-                    <tr><th>Cliente</th><th>Pacote</th><th>Destino</th><th>Valor</th><th>Data</th></tr>
+                    <tr><th>ID</th><th>Cliente</th><th>Pacote</th><th>Destino</th><th>Valor</th><th>Data</th><th>Status</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td>João Silva</td><td>Paris Romântica</td><td>Paris, França</td><td>R$ 4.500,00</td><td>15/06/2024</td></tr>
-                    <tr><td>Maria Santos</td><td>Tokyo Experience</td><td>Tokyo, Japão</td><td>R$ 6.800,00</td><td>20/06/2024</td></tr>
+                    <tr><td>1</td><td>João Silva</td><td>Paris Romântica</td><td>Paris, França</td><td>R$ 4.500,00</td><td>15/06/2024</td><td>✅ Ativo</td></tr>
+                    <tr><td>2</td><td>Maria Santos</td><td>Tokyo Experience</td><td>Tokyo, Japão</td><td>R$ 6.800,00</td><td>20/06/2024</td><td>✅ Ativo</td></tr>
                 </tbody>
             </table>
             
-            <p><strong>Funcionalidades:</strong></p>
-            <ul>
-                <li>✅ Contratação de pacotes por clientes</li>
-                <li>✅ Controle de vagas disponíveis</li>
-                <li>✅ Consulta por cliente ou pacote</li>
-                <li>✅ Relatórios de faturamento</li>
-            </ul>
+            <h3>Consultas</h3>
+            <div class="form-row">
+                <div>
+                    <label>Buscar contratos por cliente:</label>
+                    <select id="buscaClienteContrato" onchange="buscarContratosPorCliente()">
+                        <option value="">Selecione um cliente</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Buscar clientes por pacote:</label>
+                    <select id="buscaPacoteContrato" onchange="buscarClientesPorPacote()">
+                        <option value="">Selecione um pacote</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="resultadoConsulta"></div>
+            
+            <div class="info-box" style="margin-top: 20px;">
+                <h4>📊 Estatísticas</h4>
+                <div id="estatisticasContratos">
+                    <p><strong>Total de Contratos:</strong> <span id="totalContratos">2</span></p>
+                    <p><strong>Faturamento Total:</strong> <span id="faturamentoTotal">R$ 11.300,00</span></p>
+                    <p><strong>Pacote Mais Vendido:</strong> <span id="pacoteMaisVendido">Empate</span></p>
+                </div>
+            </div>
         </div>
 
         <!-- Seção Validações -->
@@ -270,15 +322,34 @@ src/main/java/com/agenciaturismo/
     </div>
 
     <script>
-        let clientes = [];
-        let pacotes = [];
+        let clientes = [
+            { id: 1, nome: "João Silva", email: "joao@email.com", tipo: "Nacional", documento: "123.456.789-00" },
+            { id: 2, nome: "Maria Santos", email: "maria@email.com", tipo: "Nacional", documento: "987.654.321-00" },
+            { id: 3, nome: "John Smith", email: "john@email.com", tipo: "Estrangeiro", documento: "US1234567" }
+        ];
+        let pacotes = [
+            { id: 1, nome: "Paris Romântica", destino: "Paris, França", preco: 4500.00, vagas: 15 },
+            { id: 2, nome: "Tokyo Experience", destino: "Tokyo, Japão", preco: 6800.00, vagas: 12 },
+            { id: 3, nome: "New York City", destino: "Nova York, EUA", preco: 5200.00, vagas: 20 }
+        ];
+        let contratos = [
+            { id: 1, clienteId: 1, pacoteId: 1, clienteNome: "João Silva", pacoteNome: "Paris Romântica", destino: "Paris, França", valor: 4500.00, data: "2024-06-15" },
+            { id: 2, clienteId: 2, pacoteId: 2, clienteNome: "Maria Santos", pacoteNome: "Tokyo Experience", destino: "Tokyo, Japão", valor: 6800.00, data: "2024-06-20" }
+        ];
         let nextId = 4;
+        let nextContratoId = 3;
 
         function showSection(sectionId) {
             // Esconder todas as seções
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             // Mostrar seção selecionada
             document.getElementById(sectionId).classList.add('active');
+            
+            // Atualizar dados específicos da seção
+            if (sectionId === 'contratos') {
+                atualizarSelectsContratos();
+                atualizarEstatisticas();
+            }
         }
 
         function toggleDoc() {
@@ -396,6 +467,205 @@ src/main/java/com/agenciaturismo/
             } else {
                 result.innerHTML = '<div class="error">❌ Email inválido!</div>';
             }
+        }
+
+        // Funções de Contratos
+        function atualizarSelectsContratos() {
+            // Atualizar select de clientes
+            const selectCliente = document.getElementById('contratoCliente');
+            const selectBuscaCliente = document.getElementById('buscaClienteContrato');
+            selectCliente.innerHTML = '<option value="">Selecione um cliente</option>';
+            selectBuscaCliente.innerHTML = '<option value="">Selecione um cliente</option>';
+            
+            clientes.forEach(cliente => {
+                selectCliente.innerHTML += `<option value="${cliente.id}">${cliente.nome}</option>`;
+                selectBuscaCliente.innerHTML += `<option value="${cliente.id}">${cliente.nome}</option>`;
+            });
+            
+            // Atualizar select de pacotes
+            const selectPacote = document.getElementById('contratoPacote');
+            const selectBuscaPacote = document.getElementById('buscaPacoteContrato');
+            selectPacote.innerHTML = '<option value="">Selecione um pacote</option>';
+            selectBuscaPacote.innerHTML = '<option value="">Selecione um pacote</option>';
+            
+            pacotes.forEach(pacote => {
+                selectPacote.innerHTML += `<option value="${pacote.id}">${pacote.nome} - R$ ${pacote.preco.toFixed(2)}</option>`;
+                selectBuscaPacote.innerHTML += `<option value="${pacote.id}">${pacote.nome}</option>`;
+            });
+            
+            // Definir data padrão como hoje
+            document.getElementById('contratoData').value = new Date().toISOString().split('T')[0];
+        }
+
+        function criarContrato(e) {
+            e.preventDefault();
+            
+            const clienteId = parseInt(document.getElementById('contratoCliente').value);
+            const pacoteId = parseInt(document.getElementById('contratoPacote').value);
+            const data = document.getElementById('contratoData').value;
+            
+            // Buscar dados do cliente e pacote
+            const cliente = clientes.find(c => c.id === clienteId);
+            const pacote = pacotes.find(p => p.id === pacoteId);
+            
+            if (!cliente || !pacote) {
+                document.getElementById('msgContrato').innerHTML = '<div class="error">Erro: Cliente ou pacote não encontrado!</div>';
+                return;
+            }
+            
+            // Verificar se já existe contrato
+            const contratoExistente = contratos.find(c => c.clienteId === clienteId && c.pacoteId === pacoteId);
+            if (contratoExistente) {
+                document.getElementById('msgContrato').innerHTML = '<div class="error">Este cliente já contratou este pacote!</div>';
+                return;
+            }
+            
+            // Verificar vagas
+            if (pacote.vagas <= 0) {
+                document.getElementById('msgContrato').innerHTML = '<div class="error">Pacote sem vagas disponíveis!</div>';
+                return;
+            }
+            
+            // Criar novo contrato
+            const novoContrato = {
+                id: nextContratoId++,
+                clienteId: clienteId,
+                pacoteId: pacoteId,
+                clienteNome: cliente.nome,
+                pacoteNome: pacote.nome,
+                destino: pacote.destino,
+                valor: pacote.preco,
+                data: data
+            };
+            
+            contratos.push(novoContrato);
+            
+            // Reduzir vagas do pacote
+            pacote.vagas--;
+            
+            // Atualizar tabela
+            atualizarTabelaContratos();
+            atualizarEstatisticas();
+            
+            // Mostrar sucesso
+            document.getElementById('msgContrato').innerHTML = `
+                <div class="success">
+                    ✅ Contrato realizado com sucesso!<br>
+                    Cliente: ${cliente.nome} | Pacote: ${pacote.nome} | Valor: R$ ${pacote.preco.toFixed(2)}
+                </div>
+            `;
+            
+            // Limpar formulário
+            e.target.reset();
+            document.getElementById('contratoData').value = new Date().toISOString().split('T')[0];
+            
+            setTimeout(() => {
+                document.getElementById('msgContrato').innerHTML = '';
+            }, 5000);
+        }
+
+        function atualizarTabelaContratos() {
+            const tbody = document.querySelector('#tabelaContratos tbody');
+            tbody.innerHTML = '';
+            
+            contratos.forEach(contrato => {
+                const row = tbody.insertRow();
+                const dataFormatada = new Date(contrato.data).toLocaleDateString('pt-BR');
+                row.innerHTML = `
+                    <td>${contrato.id}</td>
+                    <td>${contrato.clienteNome}</td>
+                    <td>${contrato.pacoteNome}</td>
+                    <td>${contrato.destino}</td>
+                    <td>R$ ${contrato.valor.toFixed(2)}</td>
+                    <td>${dataFormatada}</td>
+                    <td>✅ Ativo</td>
+                `;
+            });
+        }
+
+        function buscarContratosPorCliente() {
+            const clienteId = parseInt(document.getElementById('buscaClienteContrato').value);
+            const resultado = document.getElementById('resultadoConsulta');
+            
+            if (!clienteId) {
+                resultado.innerHTML = '';
+                return;
+            }
+            
+            const cliente = clientes.find(c => c.id === clienteId);
+            const contratosCliente = contratos.filter(c => c.clienteId === clienteId);
+            
+            if (contratosCliente.length === 0) {
+                resultado.innerHTML = `<div class="info-box"><h4>📋 Contratos de ${cliente.nome}</h4><p>Nenhum contrato encontrado.</p></div>`;
+                return;
+            }
+            
+            let html = `<div class="info-box"><h4>📋 Contratos de ${cliente.nome}</h4><table class="table"><thead><tr><th>Pacote</th><th>Destino</th><th>Valor</th><th>Data</th></tr></thead><tbody>`;
+            
+            let total = 0;
+            contratosCliente.forEach(contrato => {
+                const dataFormatada = new Date(contrato.data).toLocaleDateString('pt-BR');
+                html += `<tr><td>${contrato.pacoteNome}</td><td>${contrato.destino}</td><td>R$ ${contrato.valor.toFixed(2)}</td><td>${dataFormatada}</td></tr>`;
+                total += contrato.valor;
+            });
+            
+            html += `</tbody></table><p><strong>Total investido:</strong> R$ ${total.toFixed(2)}</p></div>`;
+            resultado.innerHTML = html;
+        }
+
+        function buscarClientesPorPacote() {
+            const pacoteId = parseInt(document.getElementById('buscaPacoteContrato').value);
+            const resultado = document.getElementById('resultadoConsulta');
+            
+            if (!pacoteId) {
+                resultado.innerHTML = '';
+                return;
+            }
+            
+            const pacote = pacotes.find(p => p.id === pacoteId);
+            const contratosPacote = contratos.filter(c => c.pacoteId === pacoteId);
+            
+            if (contratosPacote.length === 0) {
+                resultado.innerHTML = `<div class="info-box"><h4>👥 Clientes do pacote ${pacote.nome}</h4><p>Nenhum cliente contratou este pacote ainda.</p></div>`;
+                return;
+            }
+            
+            let html = `<div class="info-box"><h4>👥 Clientes do pacote ${pacote.nome}</h4><table class="table"><thead><tr><th>Cliente</th><th>Tipo</th><th>Email</th><th>Data Contrato</th></tr></thead><tbody>`;
+            
+            contratosPacote.forEach(contrato => {
+                const cliente = clientes.find(c => c.id === contrato.clienteId);
+                const dataFormatada = new Date(contrato.data).toLocaleDateString('pt-BR');
+                html += `<tr><td>${cliente.nome}</td><td>${cliente.tipo}</td><td>${cliente.email}</td><td>${dataFormatada}</td></tr>`;
+            });
+            
+            html += `</tbody></table><p><strong>Total de clientes:</strong> ${contratosPacote.length} | <strong>Vagas restantes:</strong> ${pacote.vagas}</p></div>`;
+            resultado.innerHTML = html;
+        }
+
+        function atualizarEstatisticas() {
+            // Total de contratos
+            document.getElementById('totalContratos').textContent = contratos.length;
+            
+            // Faturamento total
+            const faturamentoTotal = contratos.reduce((total, contrato) => total + contrato.valor, 0);
+            document.getElementById('faturamentoTotal').textContent = `R$ ${faturamentoTotal.toFixed(2)}`;
+            
+            // Pacote mais vendido
+            const vendas = {};
+            contratos.forEach(contrato => {
+                vendas[contrato.pacoteNome] = (vendas[contrato.pacoteNome] || 0) + 1;
+            });
+            
+            let pacoteMaisVendido = 'Nenhum';
+            let maxVendas = 0;
+            for (const [pacote, quantidade] of Object.entries(vendas)) {
+                if (quantidade > maxVendas) {
+                    maxVendas = quantidade;
+                    pacoteMaisVendido = `${pacote} (${quantidade} vendas)`;
+                }
+            }
+            
+            document.getElementById('pacoteMaisVendido').textContent = pacoteMaisVendido;
         }
 
         // Mostrar primeira seção por padrão
