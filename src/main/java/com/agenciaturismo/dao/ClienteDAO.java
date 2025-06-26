@@ -3,6 +3,7 @@ package com.agenciaturismo.dao;
 import com.agenciaturismo.model.Cliente;
 import com.agenciaturismo.model.ClienteNacional;
 import com.agenciaturismo.model.ClienteEstrangeiro;
+import com.agenciaturismo.util.DatabaseConnection;
 
 import java.sql.*;
 import java.util.ArrayList;

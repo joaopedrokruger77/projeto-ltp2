@@ -1,5 +1,7 @@
 package com.agenciaturismo.test;
 
+import com.agenciaturismo.util.DatabaseConnection;
+
 import java.sql.Connection;
 
 public class TestaConexao {
