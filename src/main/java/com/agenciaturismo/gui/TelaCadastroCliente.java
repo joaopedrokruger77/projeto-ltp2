@@ -62,7 +62,7 @@ public class TelaCadastroCliente extends JDialog {
         txtTelefone = new JTextField(20);
         painelPrincipal.add(txtTelefone, gbc);
 
-        // Data de Nascimento
+        // Data de Nascimento do Cliente
         gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 1; gbc.fill = GridBagConstraints.NONE;
         painelPrincipal.add(new JLabel("Data Nascimento (dd/MM/yyyy):"), gbc);
         gbc.gridx = 1; gbc.gridwidth = 2; gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -89,16 +89,16 @@ public class TelaCadastroCliente extends JDialog {
         gbc.gridx = 1; gbc.gridwidth = 2; gbc.fill = GridBagConstraints.HORIZONTAL;
         painelPrincipal.add(painelTipo, gbc);
 
-        // Painel para documentos
+        // Painel para documentos do cliente
         painelDocumento = new JPanel(new CardLayout());
         
-        // Painel CPF
+        // Painel CPF valido
         JPanel painelCpf = new JPanel(new FlowLayout(FlowLayout.LEFT));
         painelCpf.add(new JLabel("CPF:"));
         txtCpf = new JTextField(15);
         painelCpf.add(txtCpf);
         
-        // Painel Passaporte
+        // Painel Passaporte Cliente
         JPanel painelPassaporte = new JPanel(new GridLayout(2, 2, 5, 5));
         painelPassaporte.add(new JLabel("Passaporte:"));
         txtPassaporte = new JTextField(15);
@@ -115,7 +115,7 @@ public class TelaCadastroCliente extends JDialog {
 
         add(painelPrincipal, BorderLayout.CENTER);
 
-        // Painel de botões
+        // Painel de botões para executar
         JPanel painelBotoes = new JPanel(new FlowLayout());
         JButton btnSalvar = new JButton("Salvar");
         JButton btnCancelar = new JButton("Cancelar");
@@ -147,7 +147,7 @@ public class TelaCadastroCliente extends JDialog {
     }
 
     private void salvarCliente() {
-        // Validações
+        // Validações dos Campos
         if (!validarCampos()) {
             return;
         }
@@ -194,7 +194,7 @@ public class TelaCadastroCliente extends JDialog {
     }
 
     private boolean validarCampos() {
-        // Validar campos obrigatórios
+        // Validar campos obrigatórios com tela de erros
         if (txtNome.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Nome é obrigatório!", "Validação", JOptionPane.WARNING_MESSAGE);
             txtNome.requestFocus();
@@ -207,7 +207,7 @@ public class TelaCadastroCliente extends JDialog {
             return false;
         }
 
-        // Validar formato do e-mail
+        // Validar formato do e-mail pra exigir @
         if (!ValidadorEmail.validar(txtEmail.getText())) {
             JOptionPane.showMessageDialog(this, "Formato de e-mail inválido!", "Validação", JOptionPane.WARNING_MESSAGE);
             txtEmail.requestFocus();
