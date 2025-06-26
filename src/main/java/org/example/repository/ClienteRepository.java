@@ -25,10 +25,12 @@ public class ClienteRepository {
             stmt.setString(2, cliente.getTelefone());
             stmt.setString(3, cliente.getEmail());
 
-            if (cliente instanceof ClienteNacional nacional) {
+            if (cliente instanceof ClienteNacional) {
+                ClienteNacional nacional = (ClienteNacional) cliente;
                 stmt.setString(4, nacional.getCpf());
                 stmt.setNull(5, Types.VARCHAR);
-            } else if (cliente instanceof ClienteEstrangeiro estrangeiro) {
+            } else if (cliente instanceof ClienteEstrangeiro) {
+                ClienteEstrangeiro estrangeiro = (ClienteEstrangeiro) cliente;
                 stmt.setNull(4, Types.VARCHAR);
                 stmt.setString(5, estrangeiro.getPassaporte());
             } else {
@@ -38,7 +40,7 @@ public class ClienteRepository {
             stmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Erro ao salvar cliente: " + e.getMessage());
-            e.printStackTrace(); // Em produção, use logging (Log4j, SLF4J etc)
+            e.printStackTrace();
         }
     }
 

@@ -15,7 +15,8 @@ public class ClienteDAO {
 
     public ClienteDAO() {
 
-        this.connection = DataBaseConnection.getInstance().getConnection();
+        this.connection = DatabaseConnection.getInstance().getConnection();
+
     }
 
     public boolean inserir(Cliente cliente) {
