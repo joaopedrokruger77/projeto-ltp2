@@ -26,20 +26,20 @@ public class TelaCadastroServico extends JDialog {
     private void initComponents() {
         setLayout(new BorderLayout());
 
-        // Painel principal
+
         JPanel painelPrincipal = new JPanel(new GridBagLayout());
         painelPrincipal.setBorder(BorderFactory.createTitledBorder("Dados do Serviço"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        // Nome
+
         gbc.gridx = 0; gbc.gridy = 0; gbc.anchor = GridBagConstraints.WEST;
         painelPrincipal.add(new JLabel("Nome do Serviço:"), gbc);
         gbc.gridx = 1; gbc.gridwidth = 2; gbc.fill = GridBagConstraints.HORIZONTAL;
         txtNome = new JTextField(20);
         painelPrincipal.add(txtNome, gbc);
 
-        // Categoria
+
         gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 1; gbc.fill = GridBagConstraints.NONE;
         painelPrincipal.add(new JLabel("Categoria:"), gbc);
         gbc.gridx = 1; gbc.gridwidth = 2; gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -50,14 +50,14 @@ public class TelaCadastroServico extends JDialog {
         cbCategoria.setEditable(true);
         painelPrincipal.add(cbCategoria, gbc);
 
-        // Preço
+
         gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 1; gbc.fill = GridBagConstraints.NONE;
         painelPrincipal.add(new JLabel("Preço (R$):"), gbc);
         gbc.gridx = 1; gbc.gridwidth = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
         txtPreco = new JTextField(10);
         painelPrincipal.add(txtPreco, gbc);
 
-        // Descrição
+
         gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 1; gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         painelPrincipal.add(new JLabel("Descrição:"), gbc);
@@ -71,7 +71,7 @@ public class TelaCadastroServico extends JDialog {
 
         add(painelPrincipal, BorderLayout.CENTER);
 
-        // Painel de botões
+
         JPanel painelBotoes = new JPanel(new FlowLayout());
         JButton btnSalvar = new JButton("Salvar");
         JButton btnLimpar = new JButton("Limpar");
@@ -126,14 +126,14 @@ public class TelaCadastroServico extends JDialog {
             return false;
         }
 
-        // Validar categoria
+
         if (cbCategoria.getSelectedItem() == null || cbCategoria.getSelectedItem().toString().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Categoria é obrigatória!", "Validação", JOptionPane.WARNING_MESSAGE);
             cbCategoria.requestFocus();
             return false;
         }
 
-        // Validar preço
+
         if (txtPreco.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Preço é obrigatório!", "Validação", JOptionPane.WARNING_MESSAGE);
             txtPreco.requestFocus();

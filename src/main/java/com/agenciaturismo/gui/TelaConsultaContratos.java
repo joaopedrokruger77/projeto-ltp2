@@ -37,13 +37,13 @@ public class TelaConsultaContratos extends JDialog {
     private void initComponents() {
         setLayout(new BorderLayout());
 
-        // Painel de consulta
+
         JPanel painelConsulta = new JPanel(new GridBagLayout());
         painelConsulta.setBorder(BorderFactory.createTitledBorder("Consultar Contratos"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        // Tipo de consulta
+
         gbc.gridx = 0; gbc.gridy = 0; gbc.anchor = GridBagConstraints.WEST;
         painelConsulta.add(new JLabel("Tipo de Consulta:"), gbc);
         gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -53,7 +53,7 @@ public class TelaConsultaContratos extends JDialog {
         cbTipoConsulta.addActionListener(e -> atualizarCamposConsulta());
         painelConsulta.add(cbTipoConsulta, gbc);
 
-        // Cliente
+
         gbc.gridx = 0; gbc.gridy = 1; gbc.fill = GridBagConstraints.NONE;
         painelConsulta.add(new JLabel("Cliente:"), gbc);
         gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -61,7 +61,7 @@ public class TelaConsultaContratos extends JDialog {
         cbClientes.setPreferredSize(new Dimension(300, 25));
         painelConsulta.add(cbClientes, gbc);
 
-        // Pacote
+
         gbc.gridx = 0; gbc.gridy = 2; gbc.fill = GridBagConstraints.NONE;
         painelConsulta.add(new JLabel("Pacote:"), gbc);
         gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -69,7 +69,7 @@ public class TelaConsultaContratos extends JDialog {
         cbPacotes.setPreferredSize(new Dimension(300, 25));
         painelConsulta.add(cbPacotes, gbc);
 
-        // Botão consultar
+
         gbc.gridx = 2; gbc.gridy = 1; gbc.gridheight = 2; gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         JButton btnConsultar = new JButton("Consultar");
@@ -100,7 +100,7 @@ public class TelaConsultaContratos extends JDialog {
         
         add(scrollPane, BorderLayout.CENTER);
 
-        // Painel de botões
+
         JPanel painelBotoes = new JPanel(new FlowLayout());
         JButton btnFechar = new JButton("Fechar");
         btnFechar.addActionListener(e -> dispose());
@@ -110,14 +110,14 @@ public class TelaConsultaContratos extends JDialog {
     }
 
     private void carregarDados() {
-        // Carregar clientes
+
         cbClientes.removeAllItems();
         List<Cliente> clientes = clienteDAO.listarTodos();
         for (Cliente cliente : clientes) {
             cbClientes.addItem(cliente);
         }
 
-        // Carregar pacotes
+
         cbPacotes.removeAllItems();
         List<PacoteViagem> pacotes = pacoteDAO.listarTodos();
         for (PacoteViagem pacote : pacotes) {
